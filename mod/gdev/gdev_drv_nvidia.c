@@ -118,6 +118,7 @@ struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas
 	struct gdev_drv_bo fbo, nbo, dbo;
 	struct drm_device *drm = (struct drm_device *) gdev->priv;
 	uint32_t flags;
+        int err = 0;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
 	struct gdev_drv_nvidia_pdata *pdata;
@@ -135,8 +136,9 @@ struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas
 
 	vspace.priv = vas->pvas;
 
-	if (gdev_drv_chan_alloc(drm, &vspace, &chan))
+	if (err = gdev_drv_chan_alloc(drm, &vspace, &chan))
 		goto fail_chan;
+        
 
 	ctx->cid = chan.cid & 0xffff;
 	ctx->pctx = chan.priv; /* driver private data. */
@@ -165,7 +167,7 @@ struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas
 
 	/* fence buffer. */
 	flags = GDEV_DRV_BO_SYSRAM | GDEV_DRV_BO_VSPACE | GDEV_DRV_BO_MAPPABLE;
-	if (gdev_drv_bo_alloc(drm, GDEV_FENCE_BUF_SIZE, flags, &vspace, &fbo))
+	if (err = gdev_drv_bo_alloc(drm, GDEV_FENCE_BUF_SIZE, flags, &vspace, &fbo))
 		goto fail_fence_alloc;
 	ctx->fence.bo = fbo.priv;
 	ctx->fence.addr = fbo.addr;
@@ -174,7 +176,7 @@ struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas
 
 	/* notify buffer. */
 	flags = GDEV_DRV_BO_VRAM | GDEV_DRV_BO_VSPACE;
-	if (gdev_drv_bo_alloc(drm, 8 /* 64 bits */, flags, &vspace, &nbo))
+	if (err = gdev_drv_bo_alloc(drm, 8 /* 64 bits */, flags, &vspace, &nbo))
 		goto fail_notify_alloc;
 	ctx->notify.bo = nbo.priv;
 	ctx->notify.addr = nbo.addr;
@@ -185,7 +187,7 @@ struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas
 	 */
 	if ((gdev->chipset & 0xf0) >= 0xe0){
 	    flags = GDEV_DRV_BO_SYSRAM | GDEV_DRV_BO_VSPACE | GDEV_DRV_BO_MAPPABLE;
-	    if (gdev_drv_bo_alloc(drm, sizeof(struct gdev_nve4_compute_desc), flags, &vspace, &dbo)){
+	    if (err = gdev_drv_bo_alloc(drm, sizeof(struct gdev_nve4_compute_desc), flags, &vspace, &dbo)){
 		goto fail_desc_alloc;
 	    }
 	    ctx->desc.bo = dbo.priv;
@@ -209,7 +211,7 @@ struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas
 		m2mf_class = 0x9039;
 	else
 		m2mf_class = 0xa040;
-	if (gdev_drv_subch_alloc(drm, ctx->pctx, 0xbeef323f, m2mf_class, &m2mf))
+	if (err = gdev_drv_subch_alloc(drm, ctx->pctx, 0xbeef323f, m2mf_class, &m2mf))
 		goto fail_m2mf;
 #if 0 /* un-necessary */
 	/* allocating PGRAPH context for COMPUTE */
@@ -237,16 +239,21 @@ fail_m2mf:
 	kfree(pdata);
 fail_ctx_objects:
 	gdev_drv_bo_free(&vspace, &nbo);
+        printk("failed ctx_objects %d", err);
 #endif
 fail_desc_alloc:
 	gdev_drv_bo_free(&vspace, &dbo);
+        printk("failed desc_alloc %d", err);
 fail_notify_alloc:
 	gdev_drv_bo_free(&vspace, &fbo);
+        printk("failed notify_alloc %d", err);
 fail_fence_alloc:
 	gdev_drv_chan_free(&vspace, &chan);
+        printk("failed fance_alloc %d", err);
 fail_chan:
 	kfree(ctx);
 fail_ctx:
+        printk("gdev_raw_ctx_new err %d", err);
 	return NULL;
 }
 

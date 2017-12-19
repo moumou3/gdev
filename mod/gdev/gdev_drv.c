@@ -34,7 +34,7 @@
 #include <linux/vmalloc.h>
 #include <linux/version.h>
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,9,0)
-#include <linux/sched/types.h>
+//#include <linux/sched/types.h>
 #endif
 
 #include "gdev_api.h"
