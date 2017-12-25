@@ -209,9 +209,11 @@ struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas
 		m2mf_class = 0x5039;
 	else if ((gdev->chipset & 0xf0) < 0xe0)
 		m2mf_class = 0x9039;
-	else
+        else if ((gdev->chipset & 0xf0) < 0xf0) 
 		m2mf_class = 0xa040;
-	if (err = gdev_drv_subch_alloc(drm, ctx->pctx, 0xbeef323f, m2mf_class, &m2mf))
+	else
+		m2mf_class = 0xa140;
+	if (err = gdev_drv_subch_alloc(drm, ctx->pctx, 0xbeef323f, m2mf_class, &m2mf, gdev->filp))
 		goto fail_m2mf;
 #if 0 /* un-necessary */
 	/* allocating PGRAPH context for COMPUTE */
