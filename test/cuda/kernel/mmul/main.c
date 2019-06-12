@@ -24,6 +24,7 @@ static void test_thread_func(void *__data)
 
 static int __init cuda_test_init(void)
 {
+        printk("n = %d, data_size = %d", n, n * n * sizeof(unsigned int));
 	test_thread = kthread_run((void*)test_thread_func, NULL, "cuda_test");
 	return 0;
 }

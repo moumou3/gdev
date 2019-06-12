@@ -270,46 +270,6 @@ int cuda_test_madd_host(unsigned int n, char *path)
 
 
 	tvsub(&tv_mem_alloc_start, &tv_total_start, &tv);
-	init_gpu = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_data_init_start, &tv_mem_alloc_start, &tv);
-	mem_alloc = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_h2d_start, &tv_data_init_start, &tv);
-	data_init = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_h2d_end, &tv_h2d_start, &tv);
-	h2d = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_exec_start, &tv_conf_kern_start, &tv);
-	configure_kernel = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_exec_end, &tv_exec_start, &tv);
-	exec = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_d2h_end, &tv_d2h_start, &tv);
-	d2h = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_close_start, &tv_d2h_end, &tv);
-	data_read = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_total_end, &tv_close_start, &tv);
-	close_gpu = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	tvsub(&tv_total_end, &tv_total_start, &tv);
-	total = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
-
-	printf("Init: %f\n", init_gpu);
-	printf("MemAlloc: %f\n", mem_alloc);
-	printf("DataInit: %f\n", data_init);
-	printf("HtoD: %f\n", h2d);
-	printf("KernConf: %f\n", configure_kernel);
-	printf("Exec: %f\n", exec);
-	printf("DtoH: %f\n", d2h);
-	printf("DataRead: %f\n", data_read);
-	printf("Close: %f\n", close_gpu);
-	printf("Total: %f\n", total);
-
 
 	return 0;
 }

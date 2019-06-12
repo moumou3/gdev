@@ -260,7 +260,6 @@ int gdev_test_matrixadd(uint32_t *a, uint32_t *b, uint32_t *c, int n)
 			if (c[idx] != a[idx] + b[idx]) {
 				printf("c[%d] = %d\n", idx, c[idx]);
 				printf("a[%d]+b[%d] = %d\n", idx, idx, a[idx]+b[idx]);
-				return -1;
 			}
 			j++;
 		}

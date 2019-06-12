@@ -41,23 +41,23 @@ int cuda_test_mmul(unsigned int n, char *path)
 	char fname[256];
 	struct timeval tv;
 	struct timeval tv_total_start, tv_total_end;
-	float total;
+	unsigned long total;
 	struct timeval tv_h2d_start, tv_h2d_end;
-	float h2d;
+	unsigned long h2d;
 	struct timeval tv_d2h_start, tv_d2h_end;
-	float d2h;
+	unsigned long d2h;
 	struct timeval tv_exec_start, tv_exec_end;
 	struct timeval tv_data_init_start;
-	float data_init;
+	unsigned long data_init;
 	struct timeval tv_mem_alloc_start;
 	struct timeval tv_conf_kern_start;
 	struct timeval tv_close_start;
-	float mem_alloc;
-	float exec;
-	float init_gpu;
-	float configure_kernel;
-	float close_gpu;
-	float data_read;
+	unsigned long mem_alloc;
+	unsigned long exec;
+	unsigned long init_gpu;
+	unsigned long configure_kernel;
+	unsigned long close_gpu;
+	unsigned long data_read;
 
 	unsigned int dummy_b, dummy_c;
 		
@@ -282,45 +282,45 @@ int cuda_test_mmul(unsigned int n, char *path)
 
 
 	tvsub(&tv_mem_alloc_start, &tv_total_start, &tv);
-	init_gpu = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	init_gpu = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_data_init_start, &tv_mem_alloc_start, &tv);
-	mem_alloc = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	mem_alloc = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_h2d_start, &tv_data_init_start, &tv);
-	data_init = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	data_init = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_h2d_end, &tv_h2d_start, &tv);
-	h2d = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	h2d = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_exec_start, &tv_conf_kern_start, &tv);
-	configure_kernel = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	configure_kernel = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_exec_end, &tv_exec_start, &tv);
-	exec = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	exec = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_d2h_end, &tv_d2h_start, &tv);
-	d2h = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	d2h = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_close_start, &tv_d2h_end, &tv);
-	data_read = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	data_read = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_total_end, &tv_close_start, &tv);
-	close_gpu = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	close_gpu = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
 	tvsub(&tv_total_end, &tv_total_start, &tv);
-	total = tv.tv_sec * 1000.0 + (float) tv.tv_usec / 1000.0;
+	total = tv.tv_sec * 1000000 + (unsigned long) tv.tv_usec;
 
-	printf("Init: %f\n", init_gpu);
-	printf("MemAlloc: %f\n", mem_alloc);
-	printf("DataInit: %f\n", data_init);
-	printf("HtoD: %f\n", h2d);
-	printf("KernConf: %f\n", configure_kernel);
-	printf("Exec: %f\n", exec);
-	printf("DtoH: %f\n", d2h);
-	printf("DataRead: %f\n", data_read);
-	printf("Close: %f\n", close_gpu);
-	printf("Total: %f\n", total);
+	printf("Init: %lu\n", init_gpu);
+	printf("MemAlloc: %lu\n", mem_alloc);
+	printf("DataInit: %lu\n", data_init);
+	printf("HtoD: %lu\n", h2d);
+	printf("KernConf: %lu\n", configure_kernel);
+	printf("Exec: %lu\n", exec);
+	printf("DtoH: %lu\n", d2h);
+	printf("DataRead: %lu\n", data_read);
+	printf("Close: %lu\n", close_gpu);
+	printf("Total: %lu\n", total);
 
 
 	return 0;
